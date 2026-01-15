@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SecureLogin • Demo</title>
+  <style>
+    :root {
+      --bg: #0f172a;
+      --card: #020617;
+      --primary: #38bdf8;
+      --secondary: #22c55e;
+      --text: #e5e7eb;
+      --muted: #94a3b8;
+      --danger: #ef4444;
+    }
+
+    * { box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background: radial-gradient(circle at top, #020617, var(--bg));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--text);
+    }
+
+    .container {
+      width: 100%;
+      max-width: 420px;
+      background: linear-gradient(180deg, #020617, #020617cc);
+      border-radius: 18px;
+      padding: 32px;
+      box-shadow: 0 20px 60px rgba(0,0,0,.6);
+      animation: fadeIn .8s ease;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .logo {
+      text-align: center;
+      margin-bottom: 24px;
+    }
+
+    .logo h1 {
+      margin: 0;
+      font-size: 28px;
+      letter-spacing: 1px;
+      background: linear-gradient(90deg, var(--primary), var(--secondary));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .logo p {
+      margin-top: 6px;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    label {
+      display: block;
+      font-size: 14px;
+      margin: 14px 0 6px;
+    }
+
+    input {
+      width: 100%;
+      padding: 12px 14px;
+      border-radius: 10px;
+      border: 1px solid #1e293b;
+      background: #020617;
+      color: var(--text);
+      outline: none;
+      transition: .3s;
+    }
+
+    input:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 2px rgba(56,189,248,.2);
+    }
+
+    button {
+      width: 100%;
+      margin-top: 22px;
+      padding: 14px;
+      border-radius: 12px;
+      border: none;
+      background: linear-gradient(90deg, var(--primary), var(--secondary));
+      color: #020617;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: transform .2s, box-shadow .2s;
+    }
+
+    button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 30px rgba(34,197,94,.35);
+    }
+
+    .error {
+      margin-top: 14px;
+      font-size: 14px;
+      color: var(--danger);
+      text-align: center;
+      display: none;
+    }
+
+    /* Dashboard */
+    .dashboard {
+      display: none;
+      text-align: center;
+    }
+
+    .dashboard h2 {
+      font-size: 26px;
+      margin-bottom: 10px;
+    }
+
+    .dashboard p {
+      color: var(--muted);
+      font-size: 15px;
+    }
+
+    .card {
+      margin-top: 24px;
+      padding: 20px;
+      border-radius: 14px;
+      background: #020617;
+      border: 1px solid #1e293b;
+    }
+
+    .logout {
+      margin-top: 20px;
+      background: transparent;
+      border: 1px solid var(--danger);
+      color: var(--danger);
+    }
+
+    .logout:hover {
+      box-shadow: 0 0 0 2px rgba(239,68,68,.2);
+      transform: none;
+    }
+
+    footer {
+      margin-top: 26px;
+      font-size: 12px;
+      color: var(--muted);
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container" id="loginBox">
+    <div class="logo">
+      <h1>SecureLogin</h1>
+      <p>SecureLogin • Autenticação Front-end</p>
+    </div>
+
+    <label for="user">Usuário</label>
+    <input type="text" id="user" placeholder="Digite seu usuário" />
+
+    <label for="pass">Senha</label>
+    <input type="password" id="pass" placeholder="Digite sua senha" />
+
+    <button onclick="login()">Entrar</button>
+    <div class="error" id="error">Usuário ou senha inválidos</div>
+
+    <footer>
+      Desenvolvido por <strong>Guih_Dev</strong><br />
+      Credenciais demo: <strong>admin / admin</strong>
+    </footer>
+  </div>
+
+  <div class="container dashboard" id="dashboard">
+    <h2>Bem-vindo, Admin 👋</h2>
+    <p>Você está logado com sucesso.</p>
+
+    <div class="card">
+      <p><strong>Status:</strong> Sessão ativa via LocalStorage</p>
+      <p><strong>Tecnologias:</strong> HTML • CSS • JavaScript • PHP Ready</p>
+      <p><strong>Objetivo:</strong> Projeto para portfólio e LinkedIn</p>
+    </div>
+
+    <button class="logout" onclick="logout()">Sair</button>
+  </div>
+
+  <script>
+    const DEMO_USER = 'admin';
+    const DEMO_PASS = 'admin';
+
+    function login() {
+      const user = document.getElementById('user').value;
+      const pass = document.getElementById('pass').value;
+      const error = document.getElementById('error');
+
+      if (user === DEMO_USER && pass === DEMO_PASS) {
+        localStorage.setItem('auth', 'true');
+        localStorage.setItem('user', user);
+        showDashboard();
+      } else {
+        error.style.display = 'block';
+      }
+    }
+
+    function logout() {
+      localStorage.clear();
+      location.reload();
+    }
+
+    function showDashboard() {
+      document.getElementById('loginBox').style.display = 'none';
+      document.getElementById('dashboard').style.display = 'block';
+    }
+
+    if (localStorage.getItem('auth') === 'true') {
+      showDashboard();
+    }
+  </script>
+
+</body>
+</html>
